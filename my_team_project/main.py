@@ -1,45 +1,91 @@
 import streamlit as st
+import pandas as pd
 
-# 1. ページ設定（ブラウザのタブ名やアイコンなど）
-# ※必ずコードの一番最初に書く必要があります
+# ---------------------------------------------------------
+# 1. 設定 & 定数 (変更しやすいようにここにまとめる)
+# ---------------------------------------------------------
+PAGE_TITLE = "投票アプリ Home"
+APP_HEADER = "🗳️ 投票アプリへようこそ！"
+APP_DESCRIPTION = "チームの意見を一つに。新しい議題を作ったり、投票に参加しましょう。"
+
+# 統計情報のダミーデータ (後でGitHubやデータベースから取得する関数に置き換えます)
+def get_stats():
+    # 本来はここで pd.read_csv('github_url...') 等を行う
+    return {
+        "participants": 42,
+        "votes": 128
+    }
+
+# ---------------------------------------------------------
+# 2. ページ設定
+# ---------------------------------------------------------
 st.set_page_config(
-    page_title="チーム制作アプリ Home",
-    page_icon="🏠",
-    layout="wide",  # 画面を広く使う設定
-    initial_sidebar_state="expanded"
+    page_title=PAGE_TITLE,
+    page_icon="🗳️",
+    layout="centered" # スマホでも見やすいよう中央寄せ
 )
 
-# 2. タイトルとメインビジュアル
-st.title("🚀 チーム制作プロジェクトへようこそ")
-st.markdown("### Python x Streamlitで作成したデモアプリです")
+# ---------------------------------------------------------
+# 3. カスタムCSS (見た目の微調整)
+# ---------------------------------------------------------
+st.markdown("""
+    <style>
+    /* 全体の余白調整 */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    /* 統計情報の文字スタイル */
+    .stat-text {
+        font-size: 0.9rem;
+        color: #666;
+        text-align: center;
+        margin-top: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# 画像を入れる場合は以下のコメントアウトを外す
-# st.image("top_image.png", use_column_width=True) 
+# ---------------------------------------------------------
+# 4. メインUI構築
+# ---------------------------------------------------------
+def main():
+    stats = get_stats()
 
-st.divider()  # 区切り線
+    # 外枠のコンテナを作成（クオリティアップのための枠線）
+    with st.container(border=True):
+        
+        # --- ヘッダー ---
+        st.title(APP_HEADER)
+        st.markdown(APP_DESCRIPTION)
+        st.divider() # 区切り線
 
-# 3. アプリの機能紹介（2列レイアウトで見やすくする）
-col1, col2 = st.columns(2)
+        # --- ナビゲーションメニュー ---
+        # st.page_link は従来のボタンよりモダンで、ページ遷移に特化しています
+        # ※ pagesフォルダに実際のファイルがないとエラーになるため、
+        #    ファイルが存在しない場合は disabled=True にする処理を入れるのが親切です。
+        
+        st.subheader("メニュー")
+        
+        col1, col2, col3 = st.columns([1, 4, 1]) # 中央寄せのためのカラム調整
+        with col2:
+            st.page_link("pages/1_list.py", label="議題一覧を見る", icon="📋", help="現在進行中の投票に参加します")
+            st.page_link("pages/2_create.py", label="新しい議題を作成する", icon="✨", help="新しい投票トピックを立ち上げます")
+            st.page_link("pages/3_result.py", label="投票結果を見る (最新)", icon="📊", help="集計結果を確認します")
 
-with col1:
-    st.header("📊 投票機能")
-    st.info("リアルタイムで投票を行い、集計します。")
-    st.write("クラスの意見を一つにまとめるための機能です。")
-    if st.button("投票ページへ移動（デモ）"):
-        st.switch_page("pages/01_voting.py") # ※実際にファイルがないとエラーになります
+        st.divider() # 区切り線
 
-with col2:
-    st.header("📈 結果確認")
-    st.success("投票結果をグラフで可視化します。")
-    st.write("データに基づいた意思決定をサポートします。")
-    # こちらにも遷移ボタンを設置可能
+        # --- フッター（統計情報） ---
+        # カラムを使って中央に配置し、見栄え良くする
+        f_col1, f_col2, f_col3 = st.columns([1, 2, 1])
+        with f_col2:
+            st.markdown(
+                f"""
+                <div class='stat-text'>
+                👥 参加者数: <b>{stats['participants']}</b> 人 / 🗳️ 投票数: <b>{stats['votes']}</b> 票
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-st.divider()
-
-# 4. お知らせや更新情報（Expanderで折りたたみ）
-with st.expander("ℹ️ 更新情報・お知らせ"):
-    st.write("- 2025/12/01: アプリのプロトタイプを公開しました。")
-    st.write("- 2025/12/05: デザインを修正予定です。")
-
-# 5. サイドバー（共通メニュー）
-st.sidebar.info("製作者: チーム〇〇")
+if __name__ == "__main__":
+    main()
