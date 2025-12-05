@@ -46,7 +46,9 @@ def add_topic_to_sheet(title, author, options, deadline):
     if sheet is None: return # 認証エラーなら何もしない
     
     worksheet = sheet.worksheet("topics")
-    created_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta, 'JST')
+    created_at = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S")
     new_row = [title, author, options, str(deadline), created_at]
     worksheet.append_row(new_row)
 
@@ -68,7 +70,9 @@ def add_vote_to_sheet(topic_title, option):
     if sheet is None: return
     
     worksheet = sheet.worksheet("votes")
-    voted_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta, 'JST')
+    voted_at = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S")
     new_row = [topic_title, option, voted_at]
     worksheet.append_row(new_row)
 
@@ -83,3 +87,4 @@ def get_votes_from_sheet():
         return pd.DataFrame(data)
     except:
         return pd.DataFrame()
+
