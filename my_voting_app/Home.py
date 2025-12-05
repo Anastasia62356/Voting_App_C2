@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # ---------------------------------------------------------
 # 1. 設定 & 定数 (変更しやすいようにここにまとめる)
@@ -100,3 +101,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
