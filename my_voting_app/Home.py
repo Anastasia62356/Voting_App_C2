@@ -55,10 +55,11 @@ def main():
 
         # --- フッター ---
         # 統計情報は削除し、シンプルな表記のみにしました
-        st.caption("チーム制作プロジェクト")
+        st.caption("Project-SYOUDAいRA")
 
 if __name__ == "__main__":
     main()
+
 
 
 
