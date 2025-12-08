@@ -1,6 +1,5 @@
 import streamlit as st
 import datetime
-import time
 import sys
 import os
 
@@ -136,6 +135,7 @@ else:
                     
                 except Exception as e:
                     st.error(f"スプレッドシートへの保存に失敗しました...: {e}")
+
 
 
 
