@@ -129,10 +129,9 @@ for index, topic in topics_df.iterrows():
             )
             if st.button("👍 投票する", key=f"vote_{index}"):
                 db_handler.add_vote_to_sheet(title, selected_option)
+                st.rerun()
                 st.success("投票しました！")
                 st.balloons()
-                time.sleep(3)
-                st.rerun()
 
         # 投票数集計表示
         with col2:
