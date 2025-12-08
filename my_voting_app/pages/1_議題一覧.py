@@ -33,21 +33,24 @@ st.set_page_config(
 st.title(APP_HEADER)
 st.caption(APP_DESCRIPTION)
 st.divider()
+
+# ソート用セッションステート初期化
 if "fg" not in st.session_state:
-    st.session_state["fg"] = 0  # 0: 期限順, 1: 新着順
-# 2列に分けてボタンを配置
-col1, col2, col3, col4 = st.columns([0.16, 0.16, 0.32, 0.32])
+    st.session_state["fg"] = 0  # 0: 締切順, 1: 新着順
+
+# 右寄せでボタンを横並びに配置
+col1, col2, col3, col4 = st.columns([0.16, 0.16, 0.32, 0.36])
 with col1:
     if st.button("⏰ 締切順"):
         st.session_state.fg = 0
 with col2:
     if st.button("🆕 新着順"):
         st.session_state.fg = 1
+
 # ---------------------------------------------------------
 # 5. スプレッドシートから議題を取得
 # ---------------------------------------------------------
 topics_df = db_handler.get_topics_from_sheet()
-
 if topics_df.empty:
     st.info("まだ議題が登録されていません。")
     st.stop()
@@ -57,42 +60,45 @@ if topics_df.empty:
 # ---------------------------------------------------------
 votes_df = db_handler.get_votes_from_sheet()
 
-# 今日の日付
+# 現在日時
 now = datetime.datetime.now()
 
+# ---------------------------------------------------------
+# 7. 日付と時刻を含む datetime に変換
+# ---------------------------------------------------------
+topics_df["deadline"] = pd.to_datetime(topics_df["deadline"], errors="coerce", format="%Y-%m-%d %H:%M")
 
-# 1. 日付と時刻を含む datetime に変換
-topics_df["deadline"] = pd.to_datetime(topics_df["deadline"], errors="coerce")
-
-
-# 2. 締切があるものだけ残す（締切済みを非表示）
+# 締切があるものだけ残す（締切済み非表示）
 topics_df = topics_df[topics_df["deadline"].isna() | (topics_df["deadline"] >= now)]
 
-# 3. 締切日で昇順ソート（期限が近いものから表示）
-if st.session_state.fg == 0:
+# ソート処理
+if st.session_state.fg == 0:  # 締切順（昇順）
     topics_df = topics_df.sort_values("deadline", ascending=True)
-# 3. 締切日で降順ソート（期限が遠いものから表示）
-if st.session_state.fg == 1:
+elif st.session_state.fg == 1:  # 新着順（降順）
     topics_df = topics_df.sort_values("deadline", ascending=False)
 
-# 4. ループで表示
+# ---------------------------------------------------------
+# 8. 議題ループ表示
+# ---------------------------------------------------------
 for index, topic in topics_df.iterrows():
     title = topic["title"]
     author = topic.get("author", "不明")
     options = topic["options"].split("/")
-    deadline = topic.get("deadline", "")
+    deadline = topic.get("deadline", pd.NaT)
+
+    # deadline文字列化
+    if pd.notna(deadline):
+        deadline_str = deadline.strftime("%Y-%m-%d %H:%M")
+    else:
+        deadline_str = "未設定"
 
     with st.container(border=True):
         st.subheader(title)
-        deadline = topic.get("deadline", "")
-        if pd.notna(deadline):
-            deadline_str = deadline.strftime("%Y-%m-%d %H:%M")
-        else:
-            deadline_str = ""
         st.caption(f"作成者：{author}｜締切：{deadline_str}")
 
         col1, col2 = st.columns([1, 2])
 
+        # 投票UI
         with col1:
             selected_option = st.radio(
                 "投票してください",
@@ -104,6 +110,7 @@ for index, topic in topics_df.iterrows():
                 st.success("投票しました！")
                 st.rerun()
 
+        # 投票数集計表示
         with col2:
             st.write("### 📊 現在の投票数")
             topic_votes = votes_df[votes_df["topic_title"] == title] if not votes_df.empty else pd.DataFrame()
@@ -114,26 +121,3 @@ for index, topic in topics_df.iterrows():
                 counts = topic_votes["option"].value_counts()
                 for opt in options:
                     st.write(f"{opt}：{counts.get(opt, 0)} 票")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
