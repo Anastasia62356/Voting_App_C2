@@ -41,21 +41,21 @@ if "fg" not in st.session_state:
 
 # 右寄せでボタンを横並びに配置
 col1, col2, col3, col4 = st.columns([0.36, 0.36, 0.14, 0.14])
-
 with col1:
-    input_date = st.date_input("締め切り", min_value=datetime.date.today())
-
+    input_date = st.date_input("締め切り",min_value=datetime.date.today())
+   
 with col3:
     st.write("")
     st.write("")
     if st.button("⬆️ 昇順"):
         st.session_state.fg = 1
-
+   
 with col4:
     st.write("")
     st.write("")
     if st.button("⬇️ 降順"):
         st.session_state.fg = 0
+    
 
 # ---------------------------------------------------------
 # 5. スプレッドシートから議題を取得
@@ -76,21 +76,17 @@ now = datetime.datetime.now()
 # ---------------------------------------------------------
 # 7. 日付と時刻を含む datetime に変換
 # ---------------------------------------------------------
-topics_df["deadline"] = pd.to_datetime(
-    topics_df["deadline"], errors="coerce", format="%Y-%m-%d %H:%M"
-)
+topics_df["deadline"] = pd.to_datetime(topics_df["deadline"], errors="coerce", format="%Y-%m-%d %H:%M")
 
 # 締切があるものだけ残す（締切済み非表示）
-topics_df = topics_df[
-    topics_df["deadline"].isna() | (topics_df["deadline"] >= now)
-]
+topics_df = topics_df[topics_df["deadline"].isna() | (topics_df["deadline"] >= now)]
 
 # ソート処理
 if st.session_state.fg == 0:  # 締切順（昇順）
     topics_df = topics_df.sort_values("deadline", ascending=True)
 elif st.session_state.fg == 1:  # 新着順（降順）
     topics_df = topics_df.sort_values("deadline", ascending=False)
-
+    
 # 締切日での検索（input_date でフィルタ）
 if input_date:
     filtered_df = topics_df[
@@ -100,10 +96,9 @@ if input_date:
     # 該当データがあるか判定
     if filtered_df.empty:
         st.warning("⚠️ 指定した締切日の議題は見つかりませんでした。")
-        st.stop()
+        st.stop()   # これ以降の表示処理を止める
     else:
         topics_df = filtered_df
-
 # ---------------------------------------------------------
 # 8. 議題ループ表示
 # ---------------------------------------------------------
@@ -121,7 +116,7 @@ for index, topic in topics_df.iterrows():
 
     with st.container(border=True):
         st.subheader(title)
-        st.caption(f"作成者：{author}｜締切：{deadline_str}")
+        st.caption(f"作成者：{author}｜締め切り：{deadline_str}")
 
         col1, col2 = st.columns([1, 2])
 
@@ -132,7 +127,6 @@ for index, topic in topics_df.iterrows():
                 options,
                 key=f"radio_{index}"
             )
-
             if st.button("👍 投票する", key=f"vote_{index}"):
                 db_handler.add_vote_to_sheet(title, selected_option)
                 st.success("投票しました！")
@@ -143,12 +137,7 @@ for index, topic in topics_df.iterrows():
         # 投票数集計表示
         with col2:
             st.write("### 📊 現在の投票数")
-
-            topic_votes = (
-                votes_df[votes_df["topic_title"] == title]
-                if not votes_df.empty else pd.DataFrame()
-            )
-
+            topic_votes = votes_df[votes_df["topic_title"] == title] if not votes_df.empty else pd.DataFrame()
             if topic_votes.empty:
                 for opt in options:
                     st.write(f"{opt}：0 票")
@@ -156,3 +145,26 @@ for index, topic in topics_df.iterrows():
                 counts = topic_votes["option"].value_counts()
                 for opt in options:
                     st.write(f"{opt}：{counts.get(opt, 0)} 票")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
