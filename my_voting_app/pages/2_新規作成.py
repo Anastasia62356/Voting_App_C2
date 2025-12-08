@@ -4,10 +4,8 @@ import sys
 import os
 
 # db_handler.py を読み込めるようにパスを通す設定
-# (pagesフォルダの中から、一つ上の階層にある db_handler.py を見つけるため)
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
 
-# さっき作った db_handler.py を読み込む
 import db_handler 
 
 # ---------------------------------------------------------
@@ -36,11 +34,25 @@ with st.container(border=True):
     st.subheader("📝 議題の内容")
     title = st.text_input("議題のタイトル", placeholder="例：来週のランチどこ行く？")
     
-    col_a, col_b = st.columns(2)
-    with col_a:
-        author = st.text_input("作成者名", placeholder="例：山田 太郎")
-    with col_b:
-        deadline = st.date_input("締め切り日", min_value=datetime.date.today())
+    # 作成者名
+    author = st.text_input("作成者名", placeholder="例：山田 太郎")
+
+    # ▼▼▼ 修正ポイント：日付と時間を横並びにする ▼▼▼
+    st.markdown("##### 📅 締め切り設定")
+    col_date, col_time = st.columns(2)
+    
+    with col_date:
+        # 日付の入力
+        input_date = st.date_input("締め切り日", min_value=datetime.date.today())
+    
+    with col_time:
+        # 時間の入力（初期値は12:00に設定）
+        # step=600 で「10分単位」、step=60 なら「1分単位」になります
+        input_time = st.time_input("締め切り時間", value=datetime.time(12, 0), step=60)
+
+    # 日付と時間を合体させて、一つのデータにする
+    deadline_dt = datetime.datetime.combine(input_date, input_time)
+    # ▲▲▲ 修正ポイントここまで ▲▲▲
     
     st.markdown("---")
     
@@ -70,18 +82,21 @@ with st.container(border=True):
         else:
             options_str = "/".join(valid_options)
             
-            # ▼▼▼ ここが重要！ CSVではなくスプレッドシートに保存 ▼▼▼
             try:
+                # 日時を見やすい文字（例: 2025-12-08 12:30）に変換
+                formatted_deadline = deadline_dt.strftime("%Y-%m-%d %H:%M")
+
                 # db_handlerを使ってスプレッドシートに書き込む
-                db_handler.add_topic_to_sheet(title, author, options_str, deadline)
+                db_handler.add_topic_to_sheet(title, author, options_str, formatted_deadline)
                 
                 st.success(f"✅ 議題「{title}」を作成しました！")
                 st.balloons()
             except Exception as e:
                 # もし設定ミスなどで保存できなかったらエラーを表示
                 st.error(f"スプレッドシートへの保存に失敗しました...: {e}")
+            
+            # 元のコードにあった「最後の行の st.balloons()」は削除しました（重複していたため）
 
-            st.balloons()
 
 
 
