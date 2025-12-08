@@ -44,10 +44,6 @@ else:
     for opt in options:
         result.append({"選択肢": opt, "投票数": int(counts.get(opt, 0))})
         
-    result_df = pd.DataFrame(result)
-
-    st.table(result_df)
-
         result_df = pd.DataFrame(result)
 
     # 表だけ表示
@@ -55,10 +51,12 @@ else:
 
 
 
+
 # ページの最後 一旦手動更新
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
