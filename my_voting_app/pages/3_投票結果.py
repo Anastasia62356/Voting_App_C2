@@ -3,43 +3,36 @@ import pandas as pd
 import sys
 import os
 
-# ---------------------------------------------------------
+
 # db_handler.py を読み込めるようにパスを通す
-# ---------------------------------------------------------
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
 import db_handler
 
-# ---------------------------------------------------------
 # ページ設定
-# ---------------------------------------------------------
 st.set_page_config(page_title="投票結果", page_icon="📊")
 
 st.title("📊 投票結果一覧")
 st.caption("締切済みの議題のみ表示します")
 
-# ---------------------------------------------------------
+
 # データ取得
-# ---------------------------------------------------------
 topics_df = db_handler.get_topics_from_sheet()
 votes_df = db_handler.get_votes_from_sheet()
 
-# ---------------------------------------------------------
+
 # 日付変換
-# ---------------------------------------------------------
 if not topics_df.empty and "deadline" in topics_df.columns:
     topics_df["deadline_parsed"] = pd.to_datetime(
         topics_df["deadline"], errors="coerce"
     )
     topics_df["deadline_date"] = topics_df["deadline_parsed"].dt.date
 
-# ---------------------------------------------------------
+
 # 今日の日付
-# ---------------------------------------------------------
 today = pd.to_datetime("now").date()
 
-# ---------------------------------------------------------
+
 # 締切済み議題のみ抽出
-# ---------------------------------------------------------
 if not topics_df.empty and "deadline_date" in topics_df.columns:
     finished_topics = topics_df[
         topics_df["deadline_date"].notna() &
@@ -48,9 +41,8 @@ if not topics_df.empty and "deadline_date" in topics_df.columns:
 else:
     finished_topics = pd.DataFrame()
 
-# ---------------------------------------------------------
+
 # 議題ドロップダウン
-# ---------------------------------------------------------
 if finished_topics.empty:
     topic_titles = ["（締切済みの議題がありません）"]
 else:
@@ -58,9 +50,8 @@ else:
 
 selected_topic = st.selectbox("議題を選択してください", topic_titles)
 
-# ---------------------------------------------------------
+
 # 表示処理
-# ---------------------------------------------------------
 if finished_topics.empty or selected_topic == "（締切済みの議題がありません）":
     st.info("締切済みの議題はまだありません。")
 
@@ -93,9 +84,9 @@ else:
     # 表表示
     st.table(result_df.reset_index(drop=True))
 
-# ---------------------------------------------------------
+
 # 更新ボタン
-# ---------------------------------------------------------
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
