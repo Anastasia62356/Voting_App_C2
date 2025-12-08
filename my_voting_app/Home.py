@@ -1,35 +1,44 @@
 import streamlit as st
 import os
+import base64
 # ---------------------------------------------------------
 # 1. 設定 & 定数
 # ---------------------------------------------------------
 PAGE_TITLE = "投票アプリ Home"
-APP_HEADER = "　🗳️　投票アプリへようこそ！"
 APP_DESCRIPTION = "チームの意見を一つに。新しい議題を作ったり、投票に参加しましょう。"
-ICON_PATH = os.path.join(os.path.dirname(__file__), "images/icon_01.png")
-
+PAGEICON_PATH = os.path.join(os.path.dirname(__file__), "images/icon_01.png")
 # ---------------------------------------------------------
 # 2. ページ設定
 # ---------------------------------------------------------
 st.set_page_config(
     page_title=PAGE_TITLE,
-    page_icon=ICON_PATH,
+    page_icon=PAGEICON_PATH,
     layout="centered"
 )
-
 # ---------------------------------------------------------
 # 3. カスタムCSS (見た目の微調整)
 # ---------------------------------------------------------
 st.markdown("""
     <style>
     /* 全体の余白調整 */
-    .block-container {
+    .block-container {AC
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
     </style>
     """, unsafe_allow_html=True)
 
+# アイコン＋文字列のヘッダー表示用関数
+def header_with_icon(icon_path, text):
+    with open(icon_path, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+    header_html = f"""
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="data:image/png;base64,{encoded}" width="40">
+        <h1 style="margin:0;">{text}</h1>
+    </div>
+    """
+    st.markdown(header_html, unsafe_allow_html=True)
 # ---------------------------------------------------------
 # 4. メインUI構築
 # ---------------------------------------------------------
@@ -38,7 +47,7 @@ def main():
     with st.container(border=True):
         
      # --- ヘッダー（ここを書き換え！） --
-        st.title(APP_HEADER)
+        header_with_icon(PAGEICON_PATH, "投票アプリへようこそ！")
         st.markdown(APP_DESCRIPTION)
         st.divider()
 
@@ -59,8 +68,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 
 
 
