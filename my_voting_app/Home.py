@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import base64
+from background import set_background
 # ---------------------------------------------------------
 # 1. 設定 & 定数
 # ---------------------------------------------------------
@@ -15,6 +16,8 @@ st.set_page_config(
     page_icon=PAGEICON_PATH,
     layout="centered"
 )
+
+set_background("background.png")  # 背景画像の設定
 # ---------------------------------------------------------
 # 3. カスタムCSS (見た目の微調整)
 # ---------------------------------------------------------
@@ -68,6 +71,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
