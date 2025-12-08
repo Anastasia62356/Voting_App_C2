@@ -51,8 +51,6 @@ else:
     st.bar_chart(result_df.set_index("選択肢"))
 
 # ページの最後に自動更新
-time.sleep(10)
-st.rerun()
-
-
-
+st.divider()
+if st.button("🔄 更新"):
+    st.rerun()
