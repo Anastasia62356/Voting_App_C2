@@ -47,6 +47,8 @@ with col1:
 with col2:
     if st.button("⬇️ 締切降順"):
         st.session_state.fg = 0
+with col3:
+    input_date = st.date_input("締め切り日", min_value=datetime.date.today())
 
 # ---------------------------------------------------------
 # 5. スプレッドシートから議題を取得
@@ -124,6 +126,7 @@ for index, topic in topics_df.iterrows():
                 counts = topic_votes["option"].value_counts()
                 for opt in options:
                     st.write(f"{opt}：{counts.get(opt, 0)} 票")
+
 
 
 
