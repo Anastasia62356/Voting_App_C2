@@ -63,6 +63,7 @@ if st.session_state.creation_completed:
     with col1:
         # ホームに戻るボタン
         if st.button("🏠 ホームに戻る", use_container_width=True):
+            reset_form()
             # 完了状態をリセットしてからホームへ
             st.session_state.creation_completed = False
             st.switch_page("Home.py") 
@@ -135,6 +136,7 @@ else:
                     
                 except Exception as e:
                     st.error(f"スプレッドシートへの保存に失敗しました...: {e}")
+
 
 
 
