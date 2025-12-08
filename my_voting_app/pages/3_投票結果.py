@@ -48,15 +48,18 @@ else:
 
     st.table(result_df)
 
-    # ✅ ここから追加
-    result_df["投票数"] = pd.to_numeric(result_df["投票数"])
-    st.bar_chart(result_df.set_index("選択肢")["投票数"])
+        result_df = pd.DataFrame(result)
+
+    # 表だけ表示
+    st.table(result_df)
+
 
 
 # ページの最後 一旦手動更新
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
