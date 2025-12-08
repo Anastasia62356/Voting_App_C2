@@ -48,57 +48,49 @@ if topics_df.empty:
 # ---------------------------------------------------------
 votes_df = db_handler.get_votes_from_sheet()
 
-# ---------------------------------------------------------
-# 7. 議題表示（本番データ）
-# ---------------------------------------------------------
+# 今日の日付
+today = datetime.date.today()
+
 for index, topic in topics_df.iterrows():
 
+    # 締切日を取得
+    deadline_str = topic.get("deadline", "")
+    try:
+        deadline = datetime.datetime.strptime(deadline_str, "%Y-%m-%d").date()
+    except:
+        deadline = None  # 日付不明なら表示する
+
+    # 締切済みならスキップ
+    if deadline and today > deadline:
+        continue  # この議題は表示しない
+
+    # ----- 以下は既存の表示処理 -----
     title = topic["title"]
     author = topic.get("author", "不明")
     options = topic["options"].split("/")
-    deadline = topic.get("deadline", "")
-    created_at = topic.get("created_at", "")
 
-    # この議題の投票データだけ抽出
     topic_votes = votes_df[votes_df["topic_title"] == title] if not votes_df.empty else pd.DataFrame()
 
     with st.container(border=True):
         st.subheader(title)
-        st.caption(f"作成者：{author}｜締切：{deadline}")
-
-        # 締切チェック
-        is_expired = False
-        try:
-            if datetime.date.today() > datetime.datetime.strptime(deadline, "%Y-%m-%d").date():
-                is_expired = True
-                st.warning("⏰ この議題は締切済みです")
-        except:
-            pass
+        st.caption(f"作成者：{author}｜締切：{deadline_str}")
 
         col1, col2 = st.columns([1, 2])
 
-        # -------------------------
-        # 投票UI
-        # -------------------------
         with col1:
             selected_option = st.radio(
                 "投票してください",
                 options,
-                key=f"radio_{index}",
-                disabled=is_expired
+                key=f"radio_{index}"
             )
 
-            if st.button("👍 投票する", key=f"vote_{index}", disabled=is_expired):
+            if st.button("👍 投票する", key=f"vote_{index}"):
                 db_handler.add_vote_to_sheet(title, selected_option)
                 st.success("投票しました！")
                 st.rerun()
 
-        # -------------------------
-        # 集計表示
-        # -------------------------
         with col2:
             st.write("### 📊 現在の投票数")
-
             if topic_votes.empty:
                 for opt in options:
                     st.write(f"{opt}：0 票")
@@ -106,4 +98,6 @@ for index, topic in topics_df.iterrows():
                 counts = topic_votes["option"].value_counts()
                 for opt in options:
                     st.write(f"{opt}：{counts.get(opt, 0)} 票")
+
+
 
