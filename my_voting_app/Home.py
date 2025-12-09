@@ -5,7 +5,7 @@ from background import set_background  #  # 背景画像の設定ファイルを
 # ---------------------------------------------------------
 # 1. 設定 & 定数
 # ---------------------------------------------------------
-PAGE_TITLE = "投票アプリ Home"
+PAGE_TITLE = "投票アプリコピー Home"
 APP_DESCRIPTION = "チームの意見を一つに。新しい議題を作ったり、投票に参加しましょう。"
 PAGEICON_PATH = os.path.join(os.path.dirname(__file__), "images/icon_01.png")
 # ---------------------------------------------------------
@@ -71,6 +71,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
