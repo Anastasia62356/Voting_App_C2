@@ -8,7 +8,7 @@ import datetime
 # ---------------------------------------------------------
 # 設定
 # ---------------------------------------------------------
-SPREADSHEET_NAME = "voting_app_db"
+SPREADSHEET_NAME = "voting_app_db_cp"
 KEY_FILE = "key.json"
 
 # ---------------------------------------------------------
@@ -115,3 +115,4 @@ def get_votes_from_sheet():
     except Exception as e:
         st.error(f"投票読み込みエラー: {e}")
         return pd.DataFrame()
+
