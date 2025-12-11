@@ -32,6 +32,14 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+st.markdown(
+    """
+    <style>
+    .main {background-color:#0e1117; color:#fafafa;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # アイコン＋文字列のヘッダー表示用関数
 def header_with_icon(icon_path, text):
     with open(icon_path, "rb") as f:
@@ -72,6 +80,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
