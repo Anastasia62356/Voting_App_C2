@@ -25,21 +25,30 @@ set_background("background.png")  # 背景画像の設定
 st.markdown("""
     <style>
     /* 全体の余白調整 */
-    .block-container {AC
+    .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
     }
-    </style>
-    """, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <style>
-    .main {background-color:#0e1117; color:#fafafa;}
+    /* 背景と文字色をダーク固定 */
+    .main, .block-container {
+        background-color: #0e1117;  /* ダーク背景 */
+        color: #fafafa;  /* 文字色 */
+    }
+
+    /* サイドバーもダークに */
+    .css-1d391kg, .css-1v3fvcr {  /* Streamlitのサイドバークラス名はバージョンによって変わる場合あり */
+        background-color: #1a1d26;
+        color: #fafafa;
+    }
+
+    /* 右上の歯車（設定）を非表示にしてユーザーによるテーマ変更を封じる */
+    [data-testid="stToolbar"] {display:none;}
+    header {display:none;}
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
+
+
 # アイコン＋文字列のヘッダー表示用関数
 def header_with_icon(icon_path, text):
     with open(icon_path, "rb") as f:
@@ -80,6 +89,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
