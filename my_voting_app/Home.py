@@ -10,7 +10,7 @@ PAGE_TITLE = "投票アプリコピー Home"
 APP_DESCRIPTION = "チームの意見を一つに。新しい議題を作ったり、投票に参加しましょう。"
 PAGEICON_PATH = os.path.join(os.path.dirname(__file__), "images/icon_01.png")
 
-[theme]
+
 base="dark"
 primaryColor="#1abc9c"  # 好みで変更
 backgroundColor="#0e1117"  # 好みで変更
@@ -80,6 +80,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
