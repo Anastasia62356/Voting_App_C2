@@ -3,6 +3,10 @@ import os
 import base64
 from background import set_background  #  # 背景画像の設定ファイルをインポート
 base="dark"
+primaryColor="#1abc9c"  # 好みで変更
+backgroundColor="#0e1117"  # 好みで変更
+secondaryBackgroundColor="#262730"  # 好みで変更
+textColor="#fafafa"  # 好みで変更
 # ---------------------------------------------------------
 # 1. 設定 & 定数
 # ---------------------------------------------------------
@@ -72,6 +76,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
