@@ -1,8 +1,17 @@
 import streamlit as st
 import pandas as pd
+
 import sys
 import os
 from background import set_background  #  # 背景画像の設定ファイルをインポート
+from google import genai # gemini api
+
+# 環境変数から API キーを取得
+API_KEY = os.getenv('GEMINI_API_KEY')
+
+# Gemini クライアント初期化
+client = genai.Client(api_key=API_KEY)
+
 
 # db_handler.py を読み込めるようにパスを通す
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
@@ -91,6 +100,7 @@ else:
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
