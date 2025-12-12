@@ -110,7 +110,7 @@ else:
 
     
             response = client.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-2.5-flash",
                 contents=analysis_prompt
             )
     
@@ -123,6 +123,7 @@ else:
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
