@@ -149,8 +149,7 @@ else:
             - （特徴2）
             - （特徴3）
             ---
-            ## 分析対象データ（CSV）
-            {result_df.to_csv(index=False)}
+           
             
             以上を踏まえて、読みやすく正確な投票結果分析を作成してください。
             """
@@ -171,6 +170,7 @@ else:
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
