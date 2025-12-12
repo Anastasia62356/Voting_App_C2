@@ -102,11 +102,12 @@ else:
     
             # 分析用の文章生成
             analysis_prompt = f"""
-    以下は投票議題「{selected_topic}」の結果です。
-    各選択肢の投票数を踏まえて、傾向・理由の推測・特徴的な点を簡潔に分析してください。
-    
-    {result_df.to_markdown(index=False)}
-    """
+            以下は投票議題「{selected_topic}」の結果です。
+            各選択肢の投票数を踏まえて、傾向・理由の推測・特徴的な点を簡潔に分析してください。
+            
+            {result_df.to_csv(index=False)}
+            """
+
     
             response = client.models.generate_content(
                 model="gemini-1.5-flash",
@@ -122,6 +123,7 @@ else:
 st.divider()
 if st.button("🔄 更新"):
     st.rerun()
+
 
 
 
